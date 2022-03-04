@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  php:
+    image: php
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    links: 
+      - db
+    ports:
+      - "8080"
+    networks:
+      - "GamePlus"
+    deploy:
+      replicas: 3
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - php
+  db:
+    image: mariadb:10.2
+    restart: always
+    environment:
+      MYSQL_DATABASE: game
+      MYSQL_USER: hu
+      MYSQL_PASSWORD: hu
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./db-dump:/var/lib/mysql
+volumes:
+  db:

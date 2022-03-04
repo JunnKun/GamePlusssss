@@ -1,0 +1,5 @@
+tasks:
+  - init: |
+      docker-compose up --build
+    command: |
+      echo 'TODO: start app'
